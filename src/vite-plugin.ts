@@ -5,7 +5,7 @@ import type { MatchOptions } from './matchStyleImports'
 export default function reactInlineCSSModulePlugin(options: MatchOptions = {}) {
   return {
     name: 'react-inline-css-module',
-    enforce: 'post',
+    enforce: 'post' as 'post',
 
     transform(source: string, id: string) {
       if (id.endsWith('tsx') || id.endsWith('jsx')) {
