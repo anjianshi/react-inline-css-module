@@ -44,10 +44,26 @@ module.exports = {
 
 
 ## App Code Example
+
+### app.module.css
+```css
+.app {
+  color: #777;
+}
+
+.info {
+  color: green;
+}
+```
+
+### App.tsx
 ```js
 import './app.module.css'
 
 function App() {
-  return <div styleName="app">content</div>
+  return <div styleName="app">
+    <div>content</div>
+    <div styleName="info">info</div>
+  </div>
 }
 ```
