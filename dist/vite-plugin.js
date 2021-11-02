@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const matchStyleImports_1 = __importDefault(require("./matchStyleImports"));
-module.exports = function reactInlineCSSModulePlugin(options = {}) {
+function reactInlineCSSModulePlugin(options = {}) {
     return {
         name: 'react-inline-css-module',
         enforce: 'post',
@@ -17,4 +17,5 @@ module.exports = function reactInlineCSSModulePlugin(options = {}) {
             }
         }
     };
-};
+}
+exports.default = reactInlineCSSModulePlugin;

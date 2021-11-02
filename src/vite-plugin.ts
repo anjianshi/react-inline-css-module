@@ -2,7 +2,7 @@ import matchStyleImports from './matchStyleImports'
 import type { MatchOptions } from './matchStyleImports'
 
 
-module.exports = function reactInlineCSSModulePlugin(options: MatchOptions = {}) {
+export default function reactInlineCSSModulePlugin(options: MatchOptions = {}) {
   return {
     name: 'react-inline-css-module',
     enforce: 'post',

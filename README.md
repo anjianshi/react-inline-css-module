@@ -31,7 +31,7 @@ module.exports = {
 
 ## Vite Configuration
 ```javascript
-const reactInlineCSSModulePlugin = require('react-inline-css-module/dist/vite-plugin')
+const reactInlineCSSModulePlugin = require('react-inline-css-module/dist/vite-plugin').default
 
 module.exports = {
   ...
