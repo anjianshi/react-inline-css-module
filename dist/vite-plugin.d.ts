@@ -1,4 +1,6 @@
-import type { Options } from './handle-style-name';
+interface Options {
+    reactVariableName?: string;
+}
 export default function reactInlineCSSModulePlugins(options?: Options): ({
     name: string;
     enforce: "pre";
@@ -10,7 +12,8 @@ export default function reactInlineCSSModulePlugins(options?: Options): ({
     name: string;
     enforce: "post";
     transform(source: string, id: string): {
-        code: string | undefined;
+        code: string;
         map: null;
     } | undefined;
 })[];
+export {};
