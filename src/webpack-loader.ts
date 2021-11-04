@@ -1,8 +1,9 @@
 import type { LoaderContext } from 'webpack'
-import matchStyleImports from './matchStyleImports'
-import type { MatchOptions } from './matchStyleImports'
+import { importStyleNameTransformer, handleStyleName } from './handle-style-name'
+import type { Options } from './handle-style-name'
 
 
-export default async function ReactInlineCSSModuleLoader(this: LoaderContext<MatchOptions>, source: string) {
-  return matchStyleImports(source, this.getOptions())
+export default async function ReactInlineCSSModuleLoader(this: LoaderContext<Options>, source: string) {
+  source = importStyleNameTransformer(source)
+  return handleStyleName(source, this.getOptions())
 }

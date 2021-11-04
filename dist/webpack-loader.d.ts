@@ -1,3 +1,3 @@
 import type { LoaderContext } from 'webpack';
-import type { MatchOptions } from './matchStyleImports';
-export default function ReactInlineCSSModuleLoader(this: LoaderContext<MatchOptions>, source: string): Promise<string>;
+import type { Options } from './handle-style-name';
+export default function ReactInlineCSSModuleLoader(this: LoaderContext<Options>, source: string): Promise<string | undefined>;

@@ -1,19 +1,35 @@
-import matchStyleImports from './matchStyleImports'
-import type { MatchOptions } from './matchStyleImports'
+import { importStyleNameTransformer, handleStyleName } from './handle-style-name'
+import type { Options } from './handle-style-name'
 
 
-export default function reactInlineCSSModulePlugin(options: MatchOptions = {}) {
-  return {
-    name: 'react-inline-css-module',
-    enforce: 'post' as 'post',
+function matchId(id: string) {
+  return id.endsWith('tsx') || id.endsWith('jsx')
+}
 
+
+export default function reactInlineCSSModulePlugins(options: Options = {}) {
+  return [{
+    name: 'react-inline-css-module-import',
+    enforce: 'pre' as 'pre',
     transform(source: string, id: string) {
-      if (id.endsWith('tsx') || id.endsWith('jsx')) {
+      if (matchId(id)) {
         return {
-          code: matchStyleImports(source, options),
+          code: importStyleNameTransformer(source),
           map: null
         }
       }
     }
-  }
+  },
+  {
+    name: 'react-inline-css-module-transform',
+    enforce: 'post' as 'post',
+    transform(source: string, id: string) {
+      if (matchId(id)) {
+        return {
+          code: handleStyleName(source, options),
+          map: null
+        }
+      }
+    }
+  }]
 }

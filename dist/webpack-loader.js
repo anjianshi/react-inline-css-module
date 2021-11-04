@@ -1,10 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const matchStyleImports_1 = __importDefault(require("./matchStyleImports"));
+const handle_style_name_1 = require("./handle-style-name");
 async function ReactInlineCSSModuleLoader(source) {
-    return (0, matchStyleImports_1.default)(source, this.getOptions());
+    source = (0, handle_style_name_1.importStyleNameTransformer)(source);
+    return (0, handle_style_name_1.handleStyleName)(source, this.getOptions());
 }
 exports.default = ReactInlineCSSModuleLoader;
