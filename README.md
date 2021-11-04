@@ -17,7 +17,7 @@ module.exports = {
         test: /\.(js|jsx|ts|tsx)$/,
         use: [
           // options are optional
-          { loader: 'react-inline-css-module/dist/webpack-loader', options: { ReactVariableName: 'React' } },
+          { loader: 'react-inline-css-module/dist/webpack-loader', options: { reactVariableName: 'React' } },
 
           // other loaders, eg babel-loader
           ...
@@ -36,7 +36,7 @@ const reactInlineCSSModulePlugin = require('react-inline-css-module/dist/vite-pl
 module.exports = {
   ...
   plugins: [
-    reactInlineCSSModulePlugin({ ReactVariableName: 'React' })    // options are optional
+    reactInlineCSSModulePlugin({ reactVariableName: 'React' })    // options are optional
   ]
   ...
 }

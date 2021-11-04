@@ -1,4 +1,44 @@
 /**
+ * 找出代码中引入的样式文件
+ */
+interface StyleImport {
+  statement: string,          // 引入了样式文件的语句
+  prefixStatement: string,    // 引入语句前面的修饰符（空格、换行符等）
+  variable?: string,          // 引入模块时指定的变量名
+  filepath: string,           // 引入的文件路径
+}
+export function findStyleImports(source: string): StyleImport[] {
+  const pattern = /(^|\n)\s*import(?:\s+(.+?)\s+from)?\s+(?:'|")(.+?\.module\.(?:css|less|sass|scss))(?:'|");?/g
+  return [...source.matchAll(pattern)]
+    .map(([statement, prefixStatement, variable, filepath]) => ({ statement, prefixStatement, variable, filepath }))
+}
+
+
+/**
+ * 给没指定变量名的样式引入补充上变量名
+ */
+export function formatVariableForStyleImports(source: string, imports: StyleImport[]) {
+  for(const info of imports) {
+    if (!info.variable) {
+      const variable = makeVariableName()
+      info.variable = variable
+      source = source.replace(info.statement, `${info.prefixStatement}import ${variable} from '${info.filepath}';`)
+    }
+  }
+
+  return {
+    variables: imports.map(info => info.variable) as string[],
+    source
+  }
+}
+
+let nextId = 1
+function makeVariableName() {
+  return `__cls_${nextId++}`
+}
+
+
+/**
  * 将 styleName 转换函数引入代码
  */
 export function importStyleNameTransformer(source: string) {
@@ -7,60 +47,12 @@ export function importStyleNameTransformer(source: string) {
 
 
 /**
- * 找出代码中的样式引用，用带上样式引用信息的 styleNameTransformer 包裹原 React.createElement 调用
+ * 用 styleName 转换函数包裹原 React.createElement() 调用
  */
-export interface Options {
-  ReactVariableName?: string
-}
-
-export function handleStyleName(source: string, options: Options) {
-  const { ReactVariableName = 'React' } = options
-
-  const matched = matchStyleImports(source)
-  if (matched === null) return
-  const classVariables = matched.variables
-  source = matched.source
-
+export function applyStyleNameTransformer(source: string, classVariables: string[], reactVariableName: string) {
   source = source.replace(
-    new RegExp(`${ReactVariableName}\\.createElement\\(`, 'g'),
-    `TransformStyleNameCreateElement(${ReactVariableName}, [${classVariables.join(',')}], `
+    new RegExp(`${reactVariableName}\\.createElement\\(`, 'g'),
+    `TransformStyleNameCreateElement(${reactVariableName}, [${classVariables.join(',')}], `
   )
   return source
-}
-
-
-/**
- * 找出代码中引入的所有样式文件，确保每个引入都指定变量名（以便后面引用）
- */
-interface StyleImport {
-  statement: string,
-  prefixStatement: string,
-  variable?: string,
-  filepath: string,
-}
-
-let nextId = 1
-function makeVariableName() {
-  return `__cls_${nextId++}`
-}
-
-function matchStyleImports(source: string) {
-  const pattern = /(^|\n)\s*import(?:\s+(.+?)\s+from)?\s+(?:'|")(.+?\.module\.(?:css|less|sass|scss))(?:'|");?/g
-  const imports: StyleImport[] = [...source.matchAll(pattern)]
-    .map(([statement, prefixStatement, variable, filepath]) => ({ statement, prefixStatement, variable, filepath }))
-
-  if (imports.length) {
-    for(const info of imports) {
-      if (!info.variable) {
-        const variable = makeVariableName()
-        info.variable = variable
-        source = source.replace(info.statement, `${info.prefixStatement}import ${variable} from '${info.filepath}';`)
-      }
-    }
-  }
-
-  return imports.length ? {
-    variables: imports.map(info => info.variable),
-    source
-  } : null
 }

@@ -1,9 +1,24 @@
 import type { LoaderContext } from 'webpack'
-import { importStyleNameTransformer, handleStyleName } from './handle-style-name'
-import type { Options } from './handle-style-name'
+import { findStyleImports, formatVariableForStyleImports, importStyleNameTransformer, applyStyleNameTransformer } from './handle-style-name'
+
+
+interface Options {
+  reactVariableName?: string
+}
 
 
 export default async function ReactInlineCSSModuleLoader(this: LoaderContext<Options>, source: string) {
+  const imports = findStyleImports(source)
+  if (!imports) return source
+
+  const formatted = formatVariableForStyleImports(source, imports)
+  const classVariables = formatted.variables
+  source = formatted.source
+
   source = importStyleNameTransformer(source)
-  return handleStyleName(source, this.getOptions())
+
+  const { reactVariableName = 'React' } = this.getOptions()
+  source = applyStyleNameTransformer(source, classVariables, reactVariableName)
+
+  return source
 }
