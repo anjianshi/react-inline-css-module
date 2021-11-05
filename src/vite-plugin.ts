@@ -9,7 +9,7 @@ function matchId(id: string) {
   return id.endsWith('tsx') || id.endsWith('jsx')
 }
 
-const KEEP_STATEMENT = `console.log(TransformStyleNameCreateElement)`     // 用来保证前一个插件引入的 TransformStyleNameCreateElement() 不会因依赖分析被
+const KEEP_STATEMENT = `console.log(TransformStyleNameCreateElement)`     // 用来保证前一个插件引入的 TransformStyleNameCreateElement() 不会因依赖分析被移除
 
 
 export default function reactInlineCSSModulePlugins(options: Options = {}) {
