@@ -1,7 +1,3 @@
-interface ReactLike {
-  createElement(name: string, props: any, ...extra: any[]): any
-}
-
 interface StyleProps {
   className?: string,
   styleName?: string,
@@ -9,7 +5,7 @@ interface StyleProps {
 
 
 export default function TransformStyleNameCreateElement<Props extends StyleProps>(
-  ReactVariable: ReactLike,
+  origCreateElement: (name: string, props: any, ...extra: any[]) => any,
   classVariables: { [name: string]: string }[],
   name: string,
   rawProps: Props,
@@ -29,5 +25,5 @@ export default function TransformStyleNameCreateElement<Props extends StyleProps
       .join(' ')
     delete props.styleName
   }
-  return ReactVariable.createElement(name, props, ...extra)
+  return origCreateElement(name, props, ...extra)
 }

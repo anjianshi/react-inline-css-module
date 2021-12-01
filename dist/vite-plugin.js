@@ -4,7 +4,7 @@ const handle_style_name_1 = require("./handle-style-name");
 function matchId(id) {
     return id.endsWith('tsx') || id.endsWith('jsx');
 }
-const KEEP_STATEMENT = `console.log(TransformStyleNameCreateElement)`; // 用来保证前一个插件引入的 TransformStyleNameCreateElement() 不会因依赖分析被
+const KEEP_STATEMENT = `console.log(TransformStyleNameCreateElement)`; // 用来保证前一个插件引入的 TransformStyleNameCreateElement() 不会因依赖分析被移除
 function reactInlineCSSModulePlugins(options = {}) {
     const { reactVariableName = 'React' } = options;
     return [{

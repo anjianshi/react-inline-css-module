@@ -39,7 +39,9 @@ exports.importStyleNameTransformer = importStyleNameTransformer;
  * 用 styleName 转换函数包裹原 React.createElement() 调用
  */
 function applyStyleNameTransformer(source, classVariables, reactVariableName) {
-    source = source.replace(new RegExp(`${reactVariableName}\\.createElement\\(`, 'g'), `TransformStyleNameCreateElement(${reactVariableName}, [${classVariables.join(',')}], `);
+    source = source.replace(
+    // 另两种包裹函数名的由来见：https://www.typescriptlang.org/docs/handbook/jsx.html
+    new RegExp(`(${reactVariableName}\\.createElement|_jsx|_jsxDEV)\\(`, 'g'), `TransformStyleNameCreateElement($1, [${classVariables.join(',')}], `);
     return source;
 }
 exports.applyStyleNameTransformer = applyStyleNameTransformer;
