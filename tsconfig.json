@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "ESNext",
+    "target": "es5",
     "module": "commonjs",
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "declaration": true,
+    "downlevelIteration": true,
     "skipLibCheck": true,  // 解决 @types/webpack 定义文件报错的问题
     "baseUrl": "./src",
     "outDir": "./dist",
