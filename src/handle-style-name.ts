@@ -1,3 +1,6 @@
+import * as fs from 'fs'
+
+
 /**
  * 找出代码中引入的样式文件
  */
@@ -40,9 +43,27 @@ function makeVariableName() {
 
 /**
  * 将 styleName 转换函数引入代码
+ *
+ * inline:
+ *  为 true 则将 TransformStyleNameCreateElement 的代码直接插入 source
+ *  为 false 则用 import 的形式引入
+ * (Vite 下用 inline 的形式性能更好)
  */
-export function importStyleNameTransformer(source: string) {
-  return "import TransformStyleNameCreateElement from 'react-inline-css-module/dist/TransformStyleNameCreateElement';\n" + source
+let transformerSource: string | null = null
+export function importStyleNameTransformer(source: string, inline=false) {
+  if (inline) {
+    if (!transformerSource) {
+      const bareSource = fs.readFileSync(require.resolve('react-inline-css-module/dist/TransformStyleNameCreateElement'))
+      transformerSource = `var TransformStyleNameCreateElement = (function() {
+        var exports = {};
+        ${bareSource};
+        return exports.default;
+      })();`
+    }
+    return transformerSource + "\n" + source
+  } else {
+    return "import TransformStyleNameCreateElement from 'react-inline-css-module/dist/TransformStyleNameCreateElement';\n" + source
+  }
 }
 
 

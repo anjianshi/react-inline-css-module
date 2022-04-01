@@ -21,7 +21,7 @@ export default function reactInlineCSSModulePlugins(options: Options = {}) {
     transform(source: string, id: string) {
       if (matchId(id) && findStyleImports(source).length) {
         return {
-          code: importStyleNameTransformer(source) + '\n;\n' + KEEP_STATEMENT + ';\n',
+          code: importStyleNameTransformer(source, true) + '\n;\n' + KEEP_STATEMENT + ';\n',
           map: null
         }
       }
