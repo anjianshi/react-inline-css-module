@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -37,11 +56,17 @@ var __values = (this && this.__values) || function(o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.applyStyleNameTransformer = exports.importStyleNameTransformer = exports.formatVariableForStyleImports = exports.findStyleImports = void 0;
+var fs = __importStar(require("fs"));
 function findStyleImports(source) {
     var pattern = /(^|\n)\s*import(?:\s+(.+?)\s+from)?\s+(?:'|")(.+?\.module\.(?:css|less|sass|scss))(?:'|");?/g;
     return __spreadArray([], __read(source.matchAll(pattern)), false).map(function (_a) {
         var _b = __read(_a, 4), statement = _b[0], prefixStatement = _b[1], variable = _b[2], filepath = _b[3];
-        return ({ statement: statement, prefixStatement: prefixStatement, variable: variable, filepath: filepath });
+        return ({
+            statement: statement,
+            prefixStatement: prefixStatement,
+            variable: variable,
+            filepath: filepath,
+        });
     });
 }
 exports.findStyleImports = findStyleImports;
@@ -69,7 +94,7 @@ function formatVariableForStyleImports(source, imports) {
     }
     return {
         variables: imports.map(function (info) { return info.variable; }),
-        source: source
+        source: source,
     };
 }
 exports.formatVariableForStyleImports = formatVariableForStyleImports;
@@ -79,9 +104,26 @@ function makeVariableName() {
 }
 /**
  * 将 styleName 转换函数引入代码
+ *
+ * inline:
+ *  为 true 则将 TransformStyleNameCreateElement 的代码直接插入 source
+ *  为 false 则用 import 的形式引入
+ * (Vite 下用 inline 的形式性能更好)
  */
-function importStyleNameTransformer(source) {
-    return "import TransformStyleNameCreateElement from 'react-inline-css-module/dist/TransformStyleNameCreateElement';\n" + source;
+var transformerSource = null;
+function importStyleNameTransformer(source, inline) {
+    if (inline === void 0) { inline = false; }
+    if (inline) {
+        if (!transformerSource) {
+            var bareSource = fs.readFileSync(require.resolve('react-inline-css-module/dist/TransformStyleNameCreateElement'));
+            transformerSource = "var TransformStyleNameCreateElement = (function() {\n        var exports = {};\n        " + bareSource + ";\n        return exports.default;\n      })();";
+        }
+        return transformerSource + '\n' + source;
+    }
+    else {
+        return ("import TransformStyleNameCreateElement from 'react-inline-css-module/dist/TransformStyleNameCreateElement';\n" +
+            source);
+    }
 }
 exports.importStyleNameTransformer = importStyleNameTransformer;
 /**
@@ -90,7 +132,7 @@ exports.importStyleNameTransformer = importStyleNameTransformer;
 function applyStyleNameTransformer(source, classVariables, reactVariableName) {
     source = source.replace(
     // 另两种包裹函数名的由来见：https://www.typescriptlang.org/docs/handbook/jsx.html
-    new RegExp("(" + reactVariableName + "\\.createElement|_jsx|_jsxDEV)\\(", 'g'), "TransformStyleNameCreateElement($1, [" + classVariables.join(',') + "], ");
+    new RegExp("(" + reactVariableName + "\\.createElement|_?jsx|_?jsxDEV)\\(", 'g'), "TransformStyleNameCreateElement($1, [" + classVariables.join(',') + "], ");
     return source;
 }
 exports.applyStyleNameTransformer = applyStyleNameTransformer;

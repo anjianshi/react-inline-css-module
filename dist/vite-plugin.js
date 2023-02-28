@@ -14,7 +14,7 @@ function reactInlineCSSModulePlugins(options) {
             transform: function (source, id) {
                 if (matchId(id) && (0, handle_style_name_1.findStyleImports)(source).length) {
                     return {
-                        code: (0, handle_style_name_1.importStyleNameTransformer)(source) + '\n;\n' + KEEP_STATEMENT + ';\n',
+                        code: (0, handle_style_name_1.importStyleNameTransformer)(source, true) + '\n;\n' + KEEP_STATEMENT + ';\n',
                         map: null
                     };
                 }

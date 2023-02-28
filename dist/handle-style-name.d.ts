@@ -15,10 +15,7 @@ export declare function formatVariableForStyleImports(source: string, imports: S
     variables: string[];
     source: string;
 };
-/**
- * 将 styleName 转换函数引入代码
- */
-export declare function importStyleNameTransformer(source: string): string;
+export declare function importStyleNameTransformer(source: string, inline?: boolean): string;
 /**
  * 用 styleName 转换函数包裹原 React.createElement() 调用
  */
