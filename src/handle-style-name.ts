@@ -86,7 +86,7 @@ export function applyStyleNameTransformer(
 ) {
   source = source.replace(
     // 另两种包裹函数名的由来见：https://www.typescriptlang.org/docs/handbook/jsx.html
-    new RegExp(`(${reactVariableName}\\.createElement|_?jsx|_?jsxDEV)\\(`, 'g'),
+    new RegExp(`(${reactVariableName}\\.createElement|_?jsx|jsxs|_?jsxDEV)\\(`, 'g'),
     `TransformStyleNameCreateElement($1, [${classVariables.join(',')}], `
   )
   return source
