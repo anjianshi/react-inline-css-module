@@ -8,6 +8,7 @@ Like [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-reac
 2. Support import multiple style files
 
 ## Webpack Configuration
+
 ```javascript
 module.exports = {
   ...
@@ -30,6 +31,7 @@ module.exports = {
 ```
 
 ## Vite Configuration
+
 ```javascript
 const reactInlineCSSModulePlugin = require('react-inline-css-module/dist/vite-plugin').default
 
@@ -42,10 +44,20 @@ module.exports = {
 }
 ```
 
+## TypeScript Configuration
+
+```json
+{
+  "compilerOptions": {
+    "types": ["react-inline-css-module/src/style-name"]
+  }
+}
+```
 
 ## App Code Example
 
 ### app.module.css
+
 ```css
 .app {
   color: #777;
@@ -57,13 +69,16 @@ module.exports = {
 ```
 
 ### App.tsx
+
 ```js
 import './app.module.css'
 
 function App() {
-  return <div styleName="app">
-    <div>content</div>
-    <div styleName="info">info</div>
-  </div>
+  return (
+    <div styleName="app">
+      <div>content</div>
+      <div styleName="info">info</div>
+    </div>
+  )
 }
 ```

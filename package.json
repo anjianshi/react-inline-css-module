@@ -1,6 +1,6 @@
 {
   "name": "react-inline-css-module",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "Auto transform CSS Module class name for React with Webpack or Vite.",
   "scripts": {
     "watch": "npm run clear && tsc --watch",
